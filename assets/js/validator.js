@@ -27,6 +27,45 @@ window.SQLMasteryValidator = (() => {
   const projectRows = (result, indexes) =>
     result.values.map(row => indexes.map(index => row[index]));
 
+  // Add virtual YYYY-MM columns when a learner returns year and month
+  // separately. This lets `YEAR(date), MONTH(date)` match a reference
+  // result such as `strftime('%Y-%m', date)`.
+  const expandDateColumns = result => {
+    const columns = [...result.columns];
+    const values = result.values.map(row => [...row]);
+
+    for (let yearIndex = 0; yearIndex < result.columns.length; yearIndex++) {
+      for (let monthIndex = 0; monthIndex < result.columns.length; monthIndex++) {
+        if (yearIndex === monthIndex) continue;
+
+        const pairs = result.values.map(row => {
+          const year = Number(row[yearIndex]);
+          const month = Number(row[monthIndex]);
+          return { year, month };
+        });
+
+        const valid = pairs.length > 0 && pairs.every(({ year, month }) =>
+          Number.isInteger(year) &&
+          year >= 1900 &&
+          year <= 2200 &&
+          Number.isInteger(month) &&
+          month >= 1 &&
+          month <= 12
+        );
+
+        if (!valid) continue;
+
+        columns.push(`virtual_year_month_${yearIndex}_${monthIndex}`);
+        values.forEach((row, rowIndex) => {
+          const { year, month } = pairs[rowIndex];
+          row.push(`${year}-${String(month).padStart(2, "0")}`);
+        });
+      }
+    }
+
+    return { ...result, columns, values };
+  };
+
   const rowEquals = (a, b, tolerance) =>
     a.length === b.length &&
     a.every((value, index) => approximatelyEqual(value, b[index], tolerance));
@@ -116,6 +155,8 @@ window.SQLMasteryValidator = (() => {
   };
 
   function validate(actual, expected, rules = {}, submittedSql = "") {
+    actual = expandDateColumns(actual);
+
     const requiredColumns = rules.requiredColumns?.length
       ? rules.requiredColumns.map(normalizeName)
       : expected.columns.map(normalizeName);
