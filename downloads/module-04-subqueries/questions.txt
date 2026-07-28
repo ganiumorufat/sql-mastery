@@ -1,0 +1,53 @@
+SQL Mastery — Module 4: subqueries
+
+Total questions: **20**
+
+Use the included SQLite database to solve the questions.
+
+Beginner
+
+1. Identify products priced above the average product price.
+
+2. Identify customers who have placed at least one order using EXISTS.
+
+3. Identify customers who have never placed an order using NOT EXISTS.
+
+4. Identify products that have been ordered using IN.
+
+5. Identify products that have never been ordered using NOT EXISTS.
+
+Easy
+
+6. Identify orders whose total revenue is above the average order revenue.
+
+7. Identify customers whose total revenue is above the average customer revenue.
+
+8. Identify products whose total quantity sold is above the average quantity sold per product.
+
+9. Identify product categories whose average product price is above the overall average product price.
+
+10. Identify countries with more customers than the average number of customers per country.
+
+Intermediate
+
+11. Identify the most expensive product using a subquery.
+
+12. Identify customers who have purchased the most expensive product.
+
+13. Identify orders that include products priced above the average product price.
+
+14. Identify customers who have purchased Electronics products.
+
+15. Identify customers who have never purchased Electronics products.
+
+Advanced
+
+16. Identify customers who have purchased products from every product category.
+
+17. Identify products purchased by every customer from Canada.
+
+18. Identify customers whose first order was placed in June.
+
+19. Identify customers whose latest order has a status of Completed.
+
+20. Identify orders containing more items than the average order.
